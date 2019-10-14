@@ -1,7 +1,11 @@
 package fr.jeywhat.coverback.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.jeywhat.coverback.repository.model.GameEntity;
 import fr.jeywhat.coverback.service.CoverService;
+import fr.jeywhat.coverback.service.GameSearchService;
+import kong.unirest.Unirest;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +28,8 @@ public class CoverController {
     private static final Logger logger = LoggerFactory.getLogger(CoverController.class);
 
     private CoverService coverService;
+
+    private GameSearchService gameListenerService;
 
     @GetMapping(path = "/{name}")
     private @ResponseBody Optional<GameEntity> getCover(@PathVariable String name){
@@ -54,6 +60,14 @@ public class CoverController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
+
+    @RequestMapping(value = "/getGames", method = RequestMethod.GET, produces = "application/json")
+    public String getGames() throws JsonProcessingException {
+        gameListenerService.searchGames();
+        ObjectMapper Obj = new ObjectMapper();
+        return Obj.writeValueAsString(gameListenerService.getGamesList());
+    }
+
 
     @GetMapping(path = "/game/all")
     private @ResponseBody List<GameEntity> getAllCovers(){
