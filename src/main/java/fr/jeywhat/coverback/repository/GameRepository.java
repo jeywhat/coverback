@@ -1,9 +1,9 @@
 package fr.jeywhat.coverback.repository;
 
-import fr.jeywhat.coverback.repository.model.CoverEntity;
+import fr.jeywhat.coverback.repository.model.GameEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CoverRepository extends JpaRepository<CoverEntity, String> {
+public interface GameRepository extends JpaRepository<GameEntity, String> {
 }

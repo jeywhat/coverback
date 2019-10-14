@@ -1,8 +1,8 @@
 package fr.jeywhat.coverback.controller;
 
-import fr.jeywhat.coverback.repository.CoverRepository;
-import fr.jeywhat.coverback.repository.model.CoverEntity;
-import org.springframework.beans.factory.annotation.Autowired;
+import fr.jeywhat.coverback.repository.model.GameEntity;
+import fr.jeywhat.coverback.service.CoverService;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,26 +12,25 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-
+@AllArgsConstructor
 public class CoverController {
 
-    @Autowired
-    private CoverRepository coverRepository;
+    private CoverService coverService;
 
     @GetMapping(path = "/game/{name}/info")
-    private @ResponseBody Optional<CoverEntity> getCover(@PathVariable String name){
-        return coverRepository.findById(name);
+    private @ResponseBody Optional<GameEntity> getCover(@PathVariable String name){
+        return coverService.findGameByID(name);
     }
 
     //TODO
     @GetMapping(path = "/game/{name}/download")
-    private @ResponseBody Optional<CoverEntity> downloadGame(@PathVariable String name){
-        return coverRepository.findById(name);
+    private @ResponseBody Optional<GameEntity> downloadGame(@PathVariable String name){
+        return null;
     }
 
     @GetMapping(path = "/games")
-    private @ResponseBody List<CoverEntity> getAllCovers(){
-        return coverRepository.findAll();
+    private @ResponseBody List<GameEntity> getAllCovers(){
+        return coverService.findAllGames();
     }
 
 

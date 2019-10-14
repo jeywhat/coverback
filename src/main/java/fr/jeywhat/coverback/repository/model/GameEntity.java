@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "cover")
-public class CoverEntity implements Serializable {
+public class GameEntity implements Serializable {
 
     @Id
     private String title;
