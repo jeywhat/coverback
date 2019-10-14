@@ -6,11 +6,15 @@ import fr.jeywhat.coverback.model.ChikenCoopAPIModel;
 import fr.jeywhat.coverback.model.GameInformation;
 import fr.jeywhat.coverback.repository.GameRepository;
 import fr.jeywhat.coverback.repository.model.GameEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -40,6 +44,21 @@ public class CoverService {
 
         return response.getBody();
     }
+
+    //TODO
+    public Resource loadFileAsResource(String fileName) {
+        /*try {
+            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+            if(resource.exists()) {
+                return resource;
+            }
+        } catch (MalformedURLException ex) {
+        }*/
+        return null;
+    }
+
+
 
     public Optional<GameEntity> findGameByID(String name){
         return gameRepository.findById(name);
