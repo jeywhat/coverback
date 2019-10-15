@@ -1,14 +1,14 @@
 package fr.jeywhat.coverback.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
+@Data
 public class ChikenCoopAPIModel {
 
     private String query;
+
     private double executionTime;
+
     private GameInformation result = new GameInformation();
 
 }

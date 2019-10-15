@@ -1,17 +1,31 @@
 package fr.jeywhat.coverback.service;
 
-import fr.jeywhat.coverback.model.Games;
-import org.springframework.stereotype.Service;
+import fr.jeywhat.coverback.model.Game;
+import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Component
+@Getter
 public class GameSearchService {
 
-    private List<Games> gamesList = new ArrayList<>();
+    @Value("${storage.location}")
+    private String storageLocation;
+
+    private List<Game> gameList = new ArrayList<>();
+
+    @PostConstruct
+    private void init(){
+        this.searchGames();
+    }
 
     private void displayDirectoryContents(File dir) {
         try {
@@ -23,7 +37,7 @@ public class GameSearchService {
                     displayDirectoryContents(file);
                 } else {
                     if(file.toString().endsWith(".xci") || file.toString().endsWith(".nsp")){
-                        gamesList.add(new Games(file.getAbsolutePath(), file.getName().replaceFirst("[.][^.]+$", ""), getFileExtension(file) ,getFileSizeMegaBytes(file)));
+                        gameList.add(new Game(file.getAbsolutePath(), file.getName().replaceFirst("[.][^.]+$", ""), getFileExtension(file) ,getFileSizeMegaBytes(file)));
                     }
                 }
             }
@@ -40,19 +54,19 @@ public class GameSearchService {
     }
 
 
-    public List<Games> getGamesList() {
-        return gamesList;
+    public List<Game> getGameList() {
+        return gameList;
     }
 
     public void searchGames() {
-        if(!gamesList.isEmpty()){
-            gamesList.clear();
+        if(!gameList.isEmpty()){
+            gameList.clear();
         }
-        File currentDir = new File("\\\\192.168.1.25\\Switch\\Jeux");
+        File currentDir = new File(this.storageLocation);
         displayDirectoryContents(currentDir);
     }
 
-    private String getFileSizeMegaBytes(File file) {
-        return (double) file.length() / (1024 * 1024) + " mb";
+    private BigDecimal getFileSizeMegaBytes(File file) {
+        return new BigDecimal((double) file.length() / (1024 * 1024)).setScale(2, RoundingMode.HALF_UP);
     }
 }

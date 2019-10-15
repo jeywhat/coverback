@@ -8,6 +8,7 @@ import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -33,6 +34,14 @@ public class GameEntity implements Serializable {
     private String developer;
 
     private String rating;
+
+    private String fullpath;
+
+    private String namefile;
+
+    private String extension;
+
+    private BigDecimal size;
 
     @Lob
     @Type(type="org.hibernate.type.BinaryType")
