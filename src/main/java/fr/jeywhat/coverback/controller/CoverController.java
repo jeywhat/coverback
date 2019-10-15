@@ -1,7 +1,5 @@
 package fr.jeywhat.coverback.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import fr.jeywhat.coverback.helper.GameHelper;
 import fr.jeywhat.coverback.repository.model.GameEntity;
 import fr.jeywhat.coverback.service.CoverService;
 import lombok.AllArgsConstructor;
@@ -9,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,10 +31,15 @@ public class CoverController {
 
     @GetMapping(path = "/{name}/download")
     public ResponseEntity<Resource> downloadFile(@PathVariable String name) {
-        Resource resource = coverService.loadFileAsResource(name);
+        Optional<GameEntity> game = coverService.findGameByID(name);
+        if(game.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        Resource resource = coverService.loadFileAsResource(game.get().getFullpath());
 
         if(resource == null){
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
         }
 
         return ResponseEntity.ok()

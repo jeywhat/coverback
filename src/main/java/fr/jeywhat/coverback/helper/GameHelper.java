@@ -1,22 +1,17 @@
 package fr.jeywhat.coverback.helper;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 @Getter
-@Component
 public class GameHelper {
 
-
+    //TODO : If no image return default image
     public static byte[] convertURLtoByteArray(String path) {
         try {
             URL url = new URL(path);
@@ -24,11 +19,15 @@ public class GameHelper {
             var output = new ByteArrayOutputStream();
             ImageIO.write(bufferimage, "jpg", output);
             return output.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
+            return null;
         }
 
-        return null;
+    }
+
+    public static boolean isSwitchGame(File file){
+        String nameFile = file.toString();
+        return nameFile.endsWith(".xci") || nameFile.endsWith(".nsp");
     }
 
 }

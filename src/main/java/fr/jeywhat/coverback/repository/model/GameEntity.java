@@ -20,6 +20,14 @@ import java.util.Date;
 public class GameEntity implements Serializable {
 
     @Id
+    private String namefile;
+
+    private String fullpath;
+
+    private String extension;
+
+    private BigDecimal size;
+
     private String title;
 
     @Column(name="release_date")
@@ -34,14 +42,6 @@ public class GameEntity implements Serializable {
     private String developer;
 
     private String rating;
-
-    private String fullpath;
-
-    private String namefile;
-
-    private String extension;
-
-    private BigDecimal size;
 
     @Lob
     @Type(type="org.hibernate.type.BinaryType")
