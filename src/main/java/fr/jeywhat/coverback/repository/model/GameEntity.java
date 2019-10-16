@@ -47,6 +47,9 @@ public class GameEntity implements Serializable {
     @Type(type="org.hibernate.type.BinaryType")
     private byte[] image;
 
+    @Column(name="can_be_downloaded")
+    private Boolean canBeDownloaded;
+
     @Temporal(value= TemporalType.TIMESTAMP)
     @Column(name="created_on")
     private Date createOn;

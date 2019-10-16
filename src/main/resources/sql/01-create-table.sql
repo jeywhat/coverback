@@ -13,5 +13,6 @@ CREATE TABLE cover(
    score DECIMAL ,
    rating VARCHAR (64) ,
    image BYTEA ,
+   can_be_downloaded BOOLEAN ,
    created_on TIMESTAMP NOT NULL
 );

@@ -96,6 +96,7 @@ public class CoverService {
                 .developer(gameInformation.getDeveloper()).score(gameInformation.getScore())
                 .rating(gameInformation.getRating())
                 .image(GameHelper.convertURLtoByteArray(gameInformation.getImage()))
+                .canBeDownloaded(true)
                 .createOn(new Date())
                 .build();
         gameRepository.save(gameEntity);
