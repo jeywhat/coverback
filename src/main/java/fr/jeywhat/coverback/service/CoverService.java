@@ -7,6 +7,7 @@ import fr.jeywhat.coverback.model.GameInformation;
 import fr.jeywhat.coverback.model.Game;
 import fr.jeywhat.coverback.repository.GameRepository;
 import fr.jeywhat.coverback.repository.model.GameEntity;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +34,9 @@ public class CoverService {
     @Value("${storage.location}")
     private String storageLocation;
 
+    @Value("${default.img.url}")
+    private String pathDefaultImg;
+
     private GameRepository gameRepository;
 
     public CoverService(GameRepository gameRepository){
@@ -50,6 +54,10 @@ public class CoverService {
             gameInformation = Objects.requireNonNull(response.getBody()).getResult();
         }catch(Exception e){
             logger.error("Can not retrieve game information : {}", game.getName());
+        }
+
+        if(gameInformation.getImage().isBlank()){
+            gameInformation.setImage(GameHelper.encodeFileToBase64Binary(pathDefaultImg));
         }
 
         insertCoverIntoBDD(gameInformation, game);

@@ -1,12 +1,14 @@
 package fr.jeywhat.coverback.helper;
 
 import lombok.Getter;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.imageio.ImageIO;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @Getter
 public class GameHelper {
@@ -23,6 +25,13 @@ public class GameHelper {
             return null;
         }
 
+    }
+
+    public static String encodeFileToBase64Binary(String path){
+        byte[] imgBytes = convertURLtoByteArray(path);
+        if(imgBytes == null)
+            return null;
+        return new String(Base64.getMimeEncoder().encode(imgBytes), StandardCharsets.UTF_8);
     }
 
     public static boolean isSwitchGame(File file){
