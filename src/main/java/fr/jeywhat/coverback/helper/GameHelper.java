@@ -1,19 +1,23 @@
 package fr.jeywhat.coverback.helper;
 
 import lombok.Getter;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 public class GameHelper {
 
-    //TODO : If no image return default image
+    private static final Logger logger = LoggerFactory.getLogger(GameHelper.class);
+
     public static byte[] convertURLtoByteArray(String path) {
         try {
             URL url = new URL(path);
@@ -24,14 +28,31 @@ public class GameHelper {
         } catch (IOException ignored) {
             return null;
         }
-
     }
 
-    public static String encodeFileToBase64Binary(String path){
-        byte[] imgBytes = convertURLtoByteArray(path);
-        if(imgBytes == null)
+    public static File getFileResourcesAssets(String nameFile) throws IOException {
+        File dirAssets = new ClassPathResource("assets").getFile();
+        Optional<File> defaultImage = Arrays.stream(Objects.requireNonNull(dirAssets.listFiles())).filter(f -> nameFile.equals(f.getName())).findFirst();
+
+        if(defaultImage.isEmpty()){
             return null;
-        return new String(Base64.getMimeEncoder().encode(imgBytes), StandardCharsets.UTF_8);
+        }
+
+        return defaultImage.get();
+    }
+
+    public static byte[] getBytesImageURI(String pathImg, String defaultImgName){
+        if(pathImg.isBlank()){
+            try {
+                return FileUtils.readFileToByteArray(Objects.requireNonNull(getFileResourcesAssets(defaultImgName)));
+            } catch (IOException e) {
+                logger.error("Can not find  the default image : {}", defaultImgName);
+                return null;
+
+            }
+        }else{
+            return convertURLtoByteArray(pathImg);
+        }
     }
 
     public static boolean isSwitchGame(File file){

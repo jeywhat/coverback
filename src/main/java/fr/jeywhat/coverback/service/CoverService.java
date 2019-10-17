@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,8 +35,8 @@ public class CoverService {
     @Value("${storage.location}")
     private String storageLocation;
 
-    @Value("${default.img.url}")
-    private String pathDefaultImg;
+    @Value("${default.img}")
+    private String defaultImgName;
 
     private GameRepository gameRepository;
 
@@ -54,10 +55,6 @@ public class CoverService {
             gameInformation = Objects.requireNonNull(response.getBody()).getResult();
         }catch(Exception e){
             logger.error("Can not retrieve game information : {}", game.getName());
-        }
-
-        if(gameInformation.getImage().isBlank()){
-            gameInformation.setImage(GameHelper.encodeFileToBase64Binary(pathDefaultImg));
         }
 
         insertCoverIntoBDD(gameInformation, game);
@@ -90,6 +87,8 @@ public class CoverService {
         return gameRepository.findAll();
     }
 
+
+
     @Transactional
     public void insertCoverIntoBDD(GameInformation gameInformation, Game game){
         GameEntity gameEntity = GameEntity.builder()
@@ -103,7 +102,7 @@ public class CoverService {
                 .genre(String.join(", ", gameInformation.getGenre()))
                 .developer(gameInformation.getDeveloper()).score(gameInformation.getScore())
                 .rating(gameInformation.getRating())
-                .image(GameHelper.convertURLtoByteArray(gameInformation.getImage()))
+                .image(GameHelper.getBytesImageURI(gameInformation.getImage(), defaultImgName))
                 .canBeDownloaded(true)
                 .createOn(new Date())
                 .build();
