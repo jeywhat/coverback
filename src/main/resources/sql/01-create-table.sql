@@ -6,7 +6,6 @@ CREATE TABLE cover(
    extension VARCHAR (8) ,
    size DECIMAL ,
    title VARCHAR (64),
-   description TEXT,
    release_date VARCHAR (64) ,
    genre VARCHAR (64) ,
    developer VARCHAR (64) ,

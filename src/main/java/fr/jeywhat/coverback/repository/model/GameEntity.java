@@ -33,8 +33,6 @@ public class GameEntity implements Serializable {
     @Column(name="release_date")
     private String releaseDate;
 
-    private String description;
-
     private String genre;
 
     private Integer score;

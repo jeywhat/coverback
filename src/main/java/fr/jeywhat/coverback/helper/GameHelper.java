@@ -48,7 +48,6 @@ public class GameHelper {
             } catch (IOException e) {
                 logger.error("Can not find  the default image : {}", defaultImgName);
                 return null;
-
             }
         }else{
             return convertURLtoByteArray(pathImg);
