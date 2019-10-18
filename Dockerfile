@@ -1,5 +1,11 @@
 FROM adoptopenjdk/openjdk11:alpine-slim
 
-RUN addgroup -g 1001 -S app && adduser -u 1001 -S app -G app
+VOLUME /games
 
-VOLUME /Switch
+COPY target/*.jar app.jar
+
+EXPOSE 8080 8080
+
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+
