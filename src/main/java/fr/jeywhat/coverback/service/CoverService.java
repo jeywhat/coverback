@@ -96,7 +96,7 @@ public class CoverService {
                 .fullpath(game.getFullpath())
                 .extension(game.getExtension())
                 .size(game.getSize())
-                .title(gameInformation.getTitle().isBlank() ? game.getName() : gameInformation.getTitle())
+                .title(gameInformation.getTitle() == null || gameInformation.getTitle().isEmpty() ? game.getName() : gameInformation.getTitle())
                 .releaseDate(gameInformation.getReleaseDate())
                 .genre(String.join(", ", gameInformation.getGenre()))
                 .developer(gameInformation.getDeveloper()).score(gameInformation.getScore())

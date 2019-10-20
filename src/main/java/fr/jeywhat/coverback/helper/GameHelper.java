@@ -42,7 +42,7 @@ public class GameHelper {
     }
 
     public static byte[] getBytesImageURI(String pathImg, String defaultImgName){
-        if(pathImg.isBlank()){
+        if(pathImg == null || pathImg.isEmpty()){
             try {
                 return FileUtils.readFileToByteArray(Objects.requireNonNull(getFileResourcesAssets(defaultImgName)));
             } catch (IOException e) {
