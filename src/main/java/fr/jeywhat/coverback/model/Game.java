@@ -5,13 +5,22 @@ import lombok.Data;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 
 @Data
 public class Game {
 
+    private final String SPLITTER_PATTERN = "_";
+
     private String fullpath;
 
     private String name;
+
+    private boolean isSuperXCI = false;
+
+    private int nbDLC = 0;
+
+    private String version = "v0";
 
     private String extension;
 
@@ -19,7 +28,11 @@ public class Game {
 
     public Game(File file){
         this.fullpath = file.getAbsolutePath();
-        this.name = file.getName().replaceFirst("[.][^.]+$", "");
+        try {
+            parserGameName(file.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.extension = getFileExtension(file);
         this.size = getFileSizeMegaBytes(file);
     }
@@ -33,6 +46,17 @@ public class Game {
 
     private BigDecimal getFileSizeMegaBytes(File file) {
         return new BigDecimal((double) file.length() / (1024 * 1024)).setScale(2, RoundingMode.HALF_UP);
+    }
+
+    private void parserGameName(String name) throws Exception{
+        String[] nameSplitted = name.replaceFirst("[.][^.]+$", "").split(SPLITTER_PATTERN);
+        this.name = nameSplitted[0];
+        if(nameSplitted.length >= 4){
+            this.isSuperXCI = "SuperXCI".equals(nameSplitted[1]);
+            this.nbDLC = Integer.parseInt(nameSplitted[2]);
+            this.version = nameSplitted[3];
+        }
+
     }
 
 }

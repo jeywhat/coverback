@@ -22,6 +22,14 @@ public class GameEntity implements Serializable {
     @Id
     private String namefile;
 
+    @Column(name="super_xci")
+    private Boolean superXCI;
+
+    @Column(name="nb_dlc")
+    private Integer nbDLC;
+
+    private String version;
+
     private String fullpath;
 
     private String extension;

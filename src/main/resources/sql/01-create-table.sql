@@ -2,6 +2,9 @@ DROP TABLE IF EXISTS cover;
 
 CREATE TABLE cover(
    namefile VARCHAR (64) PRIMARY KEY NOT NULL,
+   super_xci BOOLEAN ,
+   nb_dlc DECIMAL ,
+   version VARCHAR(64) ,
    fullpath VARCHAR (256) ,
    extension VARCHAR (8) ,
    size DECIMAL ,

@@ -93,6 +93,9 @@ public class CoverService {
     public void insertCoverIntoBDD(GameInformation gameInformation, Game game){
         GameEntity gameEntity = GameEntity.builder()
                 .namefile(game.getName())
+                .superXCI(game.isSuperXCI())
+                .nbDLC(game.getNbDLC())
+                .version(game.getVersion())
                 .fullpath(game.getFullpath())
                 .extension(game.getExtension())
                 .size(game.getSize())
@@ -102,7 +105,7 @@ public class CoverService {
                 .developer(gameInformation.getDeveloper()).score(gameInformation.getScore())
                 .rating(gameInformation.getRating())
                 .image(GameHelper.getBytesImageURI(gameInformation.getImage(), defaultImgName))
-                .canBeDownloaded(true)
+                .canBeDownloaded(false)
                 .createOn(new Date())
                 .build();
         gameRepository.save(gameEntity);

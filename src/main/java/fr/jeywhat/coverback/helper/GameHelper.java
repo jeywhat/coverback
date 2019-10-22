@@ -1,5 +1,6 @@
 package fr.jeywhat.coverback.helper;
 
+import fr.jeywhat.coverback.model.Game;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -54,9 +56,9 @@ public class GameHelper {
         }
     }
 
-    public static boolean isSwitchGame(File file){
-        String nameFile = file.toString();
-        return nameFile.endsWith(".xci") || nameFile.endsWith(".nsp");
+    public static boolean isSupportedFile(File file, List<String> supportedExtensions, List<String> ignoredPrefixes){
+        Game game = new Game(file);
+        return ignoredPrefixes.stream().noneMatch(i -> game.getName().equals(i)) && supportedExtensions.stream().anyMatch(file.toString()::endsWith);
     }
 
 }

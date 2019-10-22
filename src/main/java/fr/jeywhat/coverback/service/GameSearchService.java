@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.List;
 
 @Component
 @Getter
@@ -15,6 +16,12 @@ public class GameSearchService {
 
     @Value("${storage.location}")
     private String storageLocation;
+
+    @Value("#{'${supported.extensions.files}'.split(',')}")
+    private List<String> supportedExtensionFiles;
+
+    @Value("#{'${ignored.prefix.files}'.split(',')}")
+    private List<String> ignoredPrefixFiles;
 
     private CoverService coverService;
 
@@ -24,7 +31,7 @@ public class GameSearchService {
 
     @PostConstruct
     private void init(){
-        this.searchGames();
+        new Thread(this::searchGames).start();
     }
 
     public void searchGames() {
@@ -39,7 +46,7 @@ public class GameSearchService {
             if (file.isDirectory()) {
                 displayDirectoryContents(file);
             } else {
-                if(GameHelper.isSwitchGame(file)){
+                if(GameHelper.isSupportedFile(file, supportedExtensionFiles, ignoredPrefixFiles)){
                     coverService.addGame(new Game(file));
                 }
             }

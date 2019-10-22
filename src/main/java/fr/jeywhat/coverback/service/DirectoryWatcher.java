@@ -16,12 +16,19 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
+import java.util.List;
 
 @Service
 public class DirectoryWatcher {
 
     @Value("${storage.location}")
     private String storageLocation;
+
+    @Value("#{'${supported.extensions.files}'.split(',')}")
+    private List<String> supportedExtensionFiles;
+
+    @Value("#{'${ignored.prefix.files}'.split(',')}")
+    private List<String> ignoredPrefixFiles;
 
     private static final Logger logger = LoggerFactory.getLogger(DirectoryWatcher.class);
 
@@ -84,7 +91,7 @@ public class DirectoryWatcher {
     private void createdNewFile(File file){
         if(file.isDirectory()){
             executeAsynchronously(file.toString());
-        }else if(GameHelper.isSwitchGame(file)){
+        }else if(GameHelper.isSupportedFile(file, supportedExtensionFiles, ignoredPrefixFiles)){
             coverService.addGame(new Game(file));
         }else{
             logger.warn("Skipped file : " + file.toString());
@@ -93,7 +100,7 @@ public class DirectoryWatcher {
 
     private void deletedCurrentFile(File file){
         if(!file.isDirectory()){
-            if(GameHelper.isSwitchGame(file)){
+            if(GameHelper.isSupportedFile(file, supportedExtensionFiles, ignoredPrefixFiles)){
                 coverService.removeGame(new Game(file).getName());
             }else{
                 logger.warn("Skipped file : " + file.toString());
