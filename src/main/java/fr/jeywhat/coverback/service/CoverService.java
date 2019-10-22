@@ -38,6 +38,9 @@ public class CoverService {
     @Value("${default.img}")
     private String defaultImgName;
 
+    @Value("${allow.download:false}")
+    private boolean allowDownload;
+
     private GameRepository gameRepository;
 
     public CoverService(GameRepository gameRepository){
@@ -67,18 +70,6 @@ public class CoverService {
         return true;
     }
 
-    public Resource loadFileAsResource(String pathname) {
-        try {
-            Path path = Paths.get(pathname);
-            Resource resource = new UrlResource(path.toUri());
-            if(resource.exists()) {
-                return resource;
-            }
-        } catch (MalformedURLException ex) {
-        }
-        return null;
-    }
-
     public Optional<GameEntity> findGameByID(String name){
         return gameRepository.findById(name);
     }
@@ -105,7 +96,7 @@ public class CoverService {
                 .developer(gameInformation.getDeveloper()).score(gameInformation.getScore())
                 .rating(gameInformation.getRating())
                 .image(GameHelper.getBytesImageURI(gameInformation.getImage(), defaultImgName))
-                .canBeDownloaded(false)
+                .canBeDownloaded(allowDownload)
                 .createOn(new Date())
                 .build();
         gameRepository.save(gameEntity);

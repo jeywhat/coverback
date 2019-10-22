@@ -46,6 +46,7 @@ More informations on https://hub.docker.com/r/jeywhat/coverback-api
 |storage.location|/games|
 |supported.extensions.files|.txt,.rar,.zip|
 |ignored.prefix.files|UPD|
+|allow.download|false|
 |API_PORT| default : 8090|
 |BDD_URL| postgresql.com|
 |BDD_PORT| 5432|
