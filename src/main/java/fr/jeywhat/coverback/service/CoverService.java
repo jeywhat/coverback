@@ -7,21 +7,21 @@ import fr.jeywhat.coverback.model.GameInformation;
 import fr.jeywhat.coverback.model.Game;
 import fr.jeywhat.coverback.repository.GameRepository;
 import fr.jeywhat.coverback.repository.model.GameEntity;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -79,6 +79,31 @@ public class CoverService {
     }
 
 
+    public ResponseEntity<InputStreamResource> downloadGame(String name){
+        if(!allowDownload){
+            //By default, file download is not enabled
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Optional<GameEntity> game = findGameByID(name);
+        if(game.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        File file = new File(game.get().getFullpath());
+        InputStreamResource resource;
+        try {
+            resource = new InputStreamResource(new FileInputStream(file));
+        } catch (FileNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName()+ "\"")
+                .contentLength(file.length())
+                .body(resource);
+    }
 
     @Transactional
     public void insertCoverIntoBDD(GameInformation gameInformation, Game game){

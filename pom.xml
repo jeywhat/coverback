@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>fr.jeywhat</groupId>
 	<artifactId>coverback</artifactId>
-	<version>0.2B</version>
+	<version>0.2.1B</version>
 	<name>coverback</name>
 	<description>This project can be show your switch games informations</description>
 

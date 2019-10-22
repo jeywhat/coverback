@@ -6,6 +6,9 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 import javax.imageio.ImageIO;
 import java.io.*;
@@ -33,14 +36,14 @@ public class GameHelper {
     }
 
     public static File getFileResourcesAssets(String nameFile) throws IOException {
-        File dirAssets = new ClassPathResource("assets").getFile();
-        Optional<File> defaultImage = Arrays.stream(Objects.requireNonNull(dirAssets.listFiles())).filter(f -> nameFile.equals(f.getName())).findFirst();
+        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource resource = resolver.getResource("classpath*:assets/"+nameFile);
 
-        if(defaultImage.isEmpty()){
+        if(resource == null){
             return null;
         }
 
-        return defaultImage.get();
+        return File.createTempFile(Objects.requireNonNull(resource.getFilename()), ".jpg");
     }
 
     public static byte[] getBytesImageURI(String pathImg, String defaultImgName){
