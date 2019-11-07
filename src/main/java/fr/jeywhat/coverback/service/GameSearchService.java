@@ -23,6 +23,9 @@ public class GameSearchService {
     @Value("#{'${ignored.prefix.files}'.split(',')}")
     private List<String> ignoredPrefixFiles;
 
+    @Value("${init.scan.games.enabled:false}")
+    private boolean enabledInitScanGames;
+
     private CoverService coverService;
 
     public GameSearchService(CoverService coverService){
@@ -31,7 +34,9 @@ public class GameSearchService {
 
     @PostConstruct
     private void init(){
-        new Thread(this::searchGames).start();
+        if(enabledInitScanGames){
+            new Thread(this::searchGames).start();
+        }
     }
 
     public void searchGames() {

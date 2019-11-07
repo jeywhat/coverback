@@ -26,10 +26,16 @@ public class Game {
 
     private BigDecimal size;
 
+    public Game(String fullpath){
+        this(new File(fullpath));
+    }
+
     public Game(File file){
         this.fullpath = file.getAbsolutePath();
         try {
-            parserGameName(file.getName());
+            //Fix for SynologyOS
+            String[] fileNameParser = file.getName().split("\\\\");
+            parserGameName(fileNameParser[fileNameParser.length-1]);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,7 +54,7 @@ public class Game {
         return new BigDecimal((double) file.length() / (1024 * 1024)).setScale(2, RoundingMode.HALF_UP);
     }
 
-    private void parserGameName(String name) throws Exception{
+    private void parserGameName(String name) {
         String[] nameSplitted = name.replaceFirst("[.][^.]+$", "").split(SPLITTER_PATTERN);
         this.name = nameSplitted[0];
         if(nameSplitted.length >= 4){

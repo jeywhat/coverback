@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -13,10 +12,8 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Getter
 public class GameHelper {

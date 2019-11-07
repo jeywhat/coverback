@@ -47,12 +47,14 @@ More informations on https://hub.docker.com/r/jeywhat/coverback-api
 |supported.extensions.files|.txt,.rar,.zip|
 |ignored.prefix.files|UPD|
 |allow.download|false|
+|init.scan.games.enabled| false|
 |API_PORT| default : 8090|
 |BDD_URL| postgresql.com|
 |BDD_PORT| 5432|
 |BDD_TABLE| games|
 |BDD_USER| root /!\|
 |BDD_PASSWORD| ********|
+
 
 
 ## Usage
@@ -64,8 +66,10 @@ Exposing API on port : **8090**
 | Variable      |     Protocole|
 | :------------ | :-------------: | 
 |/game/all|GET|
+|/game/all/refresh|POST|
 |/game/{name}|GET|
-|/game/{name}/download (WIP)|GET|
+|/game/{name}/download|GET|
+
 
 
 ## Contributing

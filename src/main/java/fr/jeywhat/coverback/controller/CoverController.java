@@ -1,7 +1,9 @@
 package fr.jeywhat.coverback.controller;
 
+import fr.jeywhat.coverback.model.RefreshGames;
 import fr.jeywhat.coverback.repository.model.GameEntity;
 import fr.jeywhat.coverback.service.CoverService;
+import fr.jeywhat.coverback.service.GameSearchService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -32,5 +34,20 @@ public class CoverController {
     private @ResponseBody List<GameEntity> getAllCovers(){
         return coverService.findAllGames();
     }
+
+    @PostMapping("/refresh")
+    public @ResponseBody boolean postResponseController(
+            @RequestBody RefreshGames refreshGames) {
+
+        if(refreshGames.isRefreshAllGames()){
+            coverService.refreshGame(false);
+        }else{
+            coverService.refreshGame(true);
+        }
+
+        return true;
+    }
+
+
 
 }

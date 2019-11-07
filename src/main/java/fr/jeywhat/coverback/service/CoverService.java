@@ -105,6 +105,20 @@ public class CoverService {
                 .body(resource);
     }
 
+    public boolean refreshGame(boolean justCoverNull){
+        List<GameEntity> gameEntities;
+
+        if(justCoverNull){
+            gameEntities = gameRepository.findGameEntitiesByImageIsNullOrImageEquals(new byte[0]);
+        }else{
+            gameEntities = gameRepository.findAll();
+        }
+
+        new Thread(() -> gameEntities.forEach(g -> this.addGame(new Game(g.getFullpath())))).start();
+
+        return true;
+    }
+
     @Transactional
     public void insertCoverIntoBDD(GameInformation gameInformation, Game game){
         GameEntity gameEntity = GameEntity.builder()
