@@ -2,16 +2,14 @@ package fr.jeywhat.coverback.helper;
 
 import fr.jeywhat.coverback.model.Game;
 import lombok.Getter;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.imageio.ImageIO;
 import java.io.*;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 public class GameHelper {
@@ -30,11 +28,12 @@ public class GameHelper {
         }
     }
 
-    public static byte[] getBytesImageURI(String pathImg, String defaultImgName){
+    public static byte[] getBytesImageURI(String pathImg, String defaultImgName) {
         if(pathImg == null || pathImg.isEmpty()){
             try {
-                return FileUtils.readFileToByteArray(Objects.requireNonNull(ResourceUtils.getFile(
-                        defaultImgName)));
+                InputStream resource = new ClassPathResource(
+                        defaultImgName).getInputStream();
+                return resource.readAllBytes();
             } catch (IOException e) {
                 logger.error("Can not find  the default image : {}", defaultImgName);
                 return null;
