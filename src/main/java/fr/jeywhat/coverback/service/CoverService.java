@@ -10,6 +10,7 @@ import fr.jeywhat.coverback.repository.model.GameEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Primary
 public class CoverService {
 
     private static final Logger logger = LoggerFactory.getLogger(CoverService.class);
@@ -47,7 +49,7 @@ public class CoverService {
         this.gameRepository = gameRepository;
     }
 
-    public boolean addGame(Game game){
+    public GameEntity addGame(Game game){
         RestTemplate restTemplate = new RestTemplate();
         GameInformation gameInformation = new GameInformation();
 
@@ -60,9 +62,7 @@ public class CoverService {
             logger.error("Can not retrieve game information : {}", game.getName());
         }
 
-        insertCoverIntoBDD(gameInformation, game);
-
-        return true;
+        return insertCoverIntoBDD(gameInformation, game);
     }
 
     public boolean removeGame(String gameTitle){
@@ -109,7 +109,7 @@ public class CoverService {
         List<GameEntity> gameEntities;
 
         if(justCoverNull){
-            gameEntities = gameRepository.findGameEntitiesByImageIsNullOrImageEquals(new byte[0]);
+            gameEntities = gameRepository.findGameEntitiesByImageIsNullOrImageEqualsOrImageEquals(new byte[0], GameHelper.getBytesImageURI(null, defaultImgName));
         }else{
             gameEntities = gameRepository.findAll();
         }
@@ -120,7 +120,7 @@ public class CoverService {
     }
 
     @Transactional
-    public void insertCoverIntoBDD(GameInformation gameInformation, Game game){
+    public GameEntity insertCoverIntoBDD(GameInformation gameInformation, Game game){
         GameEntity gameEntity = GameEntity.builder()
                 .namefile(game.getName())
                 .superXCI(game.isSuperXCI())
@@ -139,6 +139,7 @@ public class CoverService {
                 .createOn(new Date())
                 .build();
         gameRepository.save(gameEntity);
-        logger.info("Inserted : Game : "+game.getName());
+        logger.info("Inserted : "+game.getName());
+        return gameEntity;
     }
 }

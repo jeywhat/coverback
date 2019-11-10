@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface GameRepository extends JpaRepository<GameEntity, String> {
 
-    List<GameEntity> findGameEntitiesByImageIsNullOrImageEquals(byte[] image);
+    List<GameEntity> findGameEntitiesByImageIsNullOrImageEqualsOrImageEquals(byte[] image1, byte[] image2);
 }

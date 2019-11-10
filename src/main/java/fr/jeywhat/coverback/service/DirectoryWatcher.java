@@ -67,12 +67,22 @@ public class DirectoryWatcher {
                         File gameFile = new File(dirPath + "\\" +  nameFile);
 
                         if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                            logger.info("Created: " + nameFile);
-                            createdNewFile(gameFile);
+                            try{
+                                logger.debug("Created: " + nameFile);
+                                createdNewFile(gameFile);
+                            }catch(Exception e){
+                                logger.error("Impossible to create {}", gameFile.getName());
+                            }
+
 
                         } else if (event.kind() == StandardWatchEventKinds.ENTRY_DELETE) {
-                            logger.warn("Deleted: " + nameFile);
-                            deletedCurrentFile(gameFile);
+                            try{
+                                logger.debug("Deleted: " + nameFile);
+                                deletedCurrentFile(gameFile);
+                            }catch(Exception e){
+                                logger.error("Impossible to delete {}", gameFile.getName());
+                            }
+
                         }
                     }
                     watchKey.reset();
@@ -81,7 +91,7 @@ public class DirectoryWatcher {
                 logger.info("Stop watching directory : " + dirPath);
 
             } catch (InterruptedException interruptedException) {
-                logger.error("Thread got interrupted:" + interruptedException);
+                logger.error("Thread got interrupted :" + interruptedException);
             } catch (Exception exception) {
                 logger.error(exception.toString());
             }
@@ -94,7 +104,7 @@ public class DirectoryWatcher {
         }else if(GameHelper.isSupportedFile(file, supportedExtensionFiles, ignoredPrefixFiles)){
             coverService.addGame(new Game(file));
         }else{
-            logger.warn("Skipped file : " + file.toString());
+            logger.debug("Skipped file : " + file.toString());
         }
     }
 
@@ -103,7 +113,7 @@ public class DirectoryWatcher {
             if(GameHelper.isSupportedFile(file, supportedExtensionFiles, ignoredPrefixFiles)){
                 coverService.removeGame(new Game(file).getName());
             }else{
-                logger.warn("Skipped file : " + file.toString());
+                logger.debug("Skipped file : " + file.toString());
             }
         }
     }

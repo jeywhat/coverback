@@ -69,6 +69,7 @@ Exposing API on port : **8090**
 |/game/all/refresh|POST|
 |/game/{name}|GET|
 |/game/{name}/download|GET|
+|/game/findNewGames|GET|
 
 
 

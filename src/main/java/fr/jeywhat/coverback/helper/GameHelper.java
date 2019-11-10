@@ -5,9 +5,7 @@ import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.util.ResourceUtils;
 
 import javax.imageio.ImageIO;
 import java.io.*;
@@ -32,21 +30,11 @@ public class GameHelper {
         }
     }
 
-    public static File getFileResourcesAssets(String nameFile) throws IOException {
-        ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        Resource resource = resolver.getResource("classpath*:assets/"+nameFile);
-
-        if(resource == null){
-            return null;
-        }
-
-        return File.createTempFile(Objects.requireNonNull(resource.getFilename()), ".jpg");
-    }
-
     public static byte[] getBytesImageURI(String pathImg, String defaultImgName){
         if(pathImg == null || pathImg.isEmpty()){
             try {
-                return FileUtils.readFileToByteArray(Objects.requireNonNull(getFileResourcesAssets(defaultImgName)));
+                return FileUtils.readFileToByteArray(Objects.requireNonNull(ResourceUtils.getFile(
+                        defaultImgName)));
             } catch (IOException e) {
                 logger.error("Can not find  the default image : {}", defaultImgName);
                 return null;

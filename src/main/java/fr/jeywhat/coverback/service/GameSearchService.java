@@ -2,13 +2,19 @@ package fr.jeywhat.coverback.service;
 
 import fr.jeywhat.coverback.helper.GameHelper;
 import fr.jeywhat.coverback.model.Game;
+import fr.jeywhat.coverback.repository.model.GameEntity;
 import lombok.Getter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Getter
@@ -23,10 +29,12 @@ public class GameSearchService {
     @Value("#{'${ignored.prefix.files}'.split(',')}")
     private List<String> ignoredPrefixFiles;
 
-    @Value("${init.scan.games.enabled:false}")
+    @Value("${init.scan.games.enabled:true}")
     private boolean enabledInitScanGames;
 
     private CoverService coverService;
+
+    private static final Logger logger = LoggerFactory.getLogger(GameSearchService.class);
 
     public GameSearchService(CoverService coverService){
         this.coverService = coverService;
@@ -39,23 +47,33 @@ public class GameSearchService {
         }
     }
 
-    public void searchGames() {
+    @Scheduled(cron = "0 0 1 * * ?")
+    public List<GameEntity> searchGames() {
+        logger.info("Beginning Games Scan !");
         File currentDir = new File(this.storageLocation);
-        displayDirectoryContents(currentDir);
+        List<GameEntity> newGames = displayDirectoryContents(currentDir);
+        logger.info("Added {} New Game(s) !", newGames.size());
+        logger.info("Finishing Games Scan !");
+        return newGames;
     }
 
-    private void displayDirectoryContents(File dir) {
+    private List<GameEntity> displayDirectoryContents(File dir) {
+        List<GameEntity> newGamesAdded = new ArrayList<>();
         File[] files = dir.listFiles();
         assert files != null;
         for (File file : files) {
             if (file.isDirectory()) {
-                displayDirectoryContents(file);
+                newGamesAdded.addAll(displayDirectoryContents(file));
             } else {
                 if(GameHelper.isSupportedFile(file, supportedExtensionFiles, ignoredPrefixFiles)){
-                    coverService.addGame(new Game(file));
+                    Game tmpGame = new Game(file);
+                    Optional<GameEntity> entity = coverService.findGameByID(tmpGame.getName());
+                    if(entity.isEmpty()){
+                        newGamesAdded.add(coverService.addGame(tmpGame));
+                    }
                 }
             }
         }
+        return newGamesAdded;
     }
-
 }
