@@ -64,7 +64,7 @@ public class DirectoryWatcher {
                     for (final WatchEvent<?> event : watchKey.pollEvents()) {
 
                         String nameFile = event.context().toString();
-                        File gameFile = new File(dirPath + "\\" +  nameFile);
+                        File gameFile = new File(dirPath + "/" +  nameFile);
 
                         if (event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                             try{
